@@ -118,6 +118,13 @@ class Coax {
         return $this;
     }
 
+    public function default($key, $value) {
+        $data = $this->_getKey($key);
+        $data['default'] = $value;
+        $this->_setKey($key, $data);
+        return $this;
+    }
+
 }
 
 /*
