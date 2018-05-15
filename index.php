@@ -111,6 +111,13 @@ class Coax {
         return iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator($array)), FALSE);
     }
 
+    public function count($key) {
+        $value = $this->_getKey($key);
+        $value['count'] = true;
+        $this->_setKey($key, $value);
+        return $this;
+    }
+
 }
 
 /*
