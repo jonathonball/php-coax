@@ -1,0 +1,13 @@
+{
+    "name": "jonathonball/php-coax",
+    "description": "getopts replacement for PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jon Ball",
+            "email": "jonathon.ball@gmail.com"
+        }
+    ],
+    "require": {}
+}
