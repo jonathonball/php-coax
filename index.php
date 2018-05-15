@@ -125,9 +125,9 @@ class Coax {
         return $this;
     }
 
-    public function demand($key) {
+    public function demand($key, $msg = true) {
         $data = $this->_getKey($key);
-        $data['demand'] = true;
+        $data['demand'] = $msg;
         $this->_setKey($key, $data);
         return $this;
     }
