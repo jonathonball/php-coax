@@ -74,6 +74,7 @@ class Coax {
         $value = $this->_geyKey($key);
         $value['boolean'] = true;
         $this->_setKey($key, $value);
+        return $this;
     }
 
     public function choices(string $key, array $choices) {
@@ -82,6 +83,7 @@ class Coax {
             $this->_arrayPushIfUnique($value, 'choices', $choice);
         }
         $this->_setKey($key, $value);
+        return $this;
     }
 
     private function _arrayPushIfUnique(array &$target, string $key, $value) {
@@ -94,20 +96,31 @@ class Coax {
         return $target;
     }
 
-    public function debug() {
-        echo "DEBUG::::\n";
-        var_dump($this->_options);
+    public function conflicts() {
+        $conflicts = $this->_flatten(func_get_args());
+        if (count($conflicts) < 2) throw new Exception('conflicts expects at least two params');
+        $key = array_shift($conflicts);
+        $value = $this->_getKey($key);
+        foreach ($conflicts as $conflict) {
+            $this->_arrayPushIfUnique($value, 'conflicts', $conflict);
+        }
+        $this->_setKey($key, $value);
+    }
+
+    private function _flatten(Array $array) {
+        return iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator($array)), FALSE);
     }
 
 }
 
-
-
+/*
 $test = new Coax();
 $test->alias('a', ['b', 'c', 'tacos'])
      ->array('a')
      ->array('stuff')
-     ->choices('brand', ['imh', 'hub']);
+     ->choices('brand', ['imh', 'hub'])
+     ->conflicts('a', ['b', 'c'], 'd');
      //->debug();
 
 var_dump($test);
+*/
