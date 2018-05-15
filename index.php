@@ -48,12 +48,7 @@ class Coax {
 
     private function _alias(string $key, string $alias) {
         $value = $this->_getKey($key);
-        if (! isset($value['aliases'])) {
-            $value['aliases'] = [];
-        }
-        if (! in_array($alias, $value['aliases'])) {
-            $value['aliases'][] = $alias;
-        }
+        $this->_arrayPushIfUnique($value, 'aliases', $alias);
         $this->_setKey($key, $value);
     }
 
@@ -68,6 +63,37 @@ class Coax {
         return false;
     }
 
+    public function array(string $key) {
+        $value = $this->_getKey($key);
+        $value['array'] = true;
+        $this->_setKey($key, $value);
+        return $this;
+    }
+
+    public function boolean(string $key) {
+        $value = $this->_geyKey($key);
+        $value['boolean'] = true;
+        $this->_setKey($key, $value);
+    }
+
+    public function choices(string $key, array $choices) {
+        $value = $this->_getKey($key);
+        foreach ($choices as $choice) {
+            $this->_arrayPushIfUnique($value, 'choices', $choice);
+        }
+        $this->_setKey($key, $value);
+    }
+
+    private function _arrayPushIfUnique(array &$target, string $key, $value) {
+        if (! isset($target[$key])) {
+            $target[$key] = [];
+        }
+        if (! in_array($key, $target[$key])) {
+            $target[$key][] = $value;
+        }
+        return $target;
+    }
+
     public function debug() {
         echo "DEBUG::::\n";
         var_dump($this->_options);
@@ -79,7 +105,9 @@ class Coax {
 
 $test = new Coax();
 $test->alias('a', ['b', 'c', 'tacos'])
-     ->alias('a', 'h')
-     ->debug();
+     ->array('a')
+     ->array('stuff')
+     ->choices('brand', ['imh', 'hub']);
+     //->debug();
 
-//var_dump($test);
+var_dump($test);
