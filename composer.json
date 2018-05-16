@@ -11,8 +11,8 @@
     ],
     "require": {},
     "autoload": {
-        "classmap": [
-	    "src/Coax.php"
-	]	
+        "psr-4": {
+	        "Coax\\": "src/"
+	    }
     }
 }
