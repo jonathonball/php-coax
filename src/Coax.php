@@ -164,6 +164,16 @@ class Coax {
         });
     }
 
+    public function middleware($middlewares) {
+        if (! is_array($middlewares)) {
+            $middlewares = [ $middlewares ];
+        }
+        foreach ($middlewares as $middleware) {
+            $this->_middleware($middleware);
+        }
+        return $this;
+    }
+
     public function nargs($key, $n) {
         return $this->_set($key, function(&$data) use ($n) {
             $data['nargs'] = $n;
@@ -176,13 +186,9 @@ class Coax {
         });
     }
 
-    public function middleware($middlewares) {
-        if (! is_array($middlewares)) {
-            $middlewares = [ $middlewares ];
-        }
-        foreach ($middlewares as $middleware) {
-            $this->_middleware($middleware);
-        }
+    public function option($key) {
+        $data = $this->_getKey($key);
+        $this->_setKey($key, $data);
         return $this;
     }
 
