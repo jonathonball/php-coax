@@ -18,4 +18,8 @@ class Util {
         return $target;
     }
 
+    public static function array_key_if_exists(&$target, $key) {
+        if (! isset($target[$key])) return null;
+        return $target[$key];
+    }
 }
