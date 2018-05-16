@@ -214,6 +214,7 @@ class Coax {
         foreach ($middlewares as $middleware) {
             $this->_middleware($middleware);
         }
+        return $this;
     }
 
     protected function _middleware($middleware) {
