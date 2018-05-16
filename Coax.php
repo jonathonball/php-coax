@@ -36,28 +36,6 @@ class Coax {
         return $this->argv;
     }
 
-    protected function _getKey($key) {
-        if (isset($this->_options[$key])) {
-            return $this->_options[$key];
-        }
-        return $this->_setKey($key);
-    }
-
-    protected function _setKey($key, $value = []) {
-        if ($this->_isAlias($key)) throw new Exception($key . ' is an existing alias.');
-        $this->_options[$key] = $value;
-        return $value;
-    }
-
-    protected function _set($key, $callback) {
-        if (! is_string($key)) throw new Exception('_set expects key to be string');
-        if (! is_callable($callback)) throw new Exception('_set expects function callback');
-        $data = $this->_getKey($key);
-        $callback($data);
-        $this->_setKey($key, $data);
-        return $this;
-    }
-
     public function alias($key, $aliases) {
         if (is_array($aliases)) {
             foreach ($aliases as $alias) {
@@ -67,23 +45,6 @@ class Coax {
             $this->_alias($key, $aliases);
         }
         return $this;
-    }
-
-    private function _alias($key, $alias) {
-        $this->_set($key, function(&$data) use ($alias) {
-            $this->_arrayPushIfUnique($data, 'aliases', $alias);
-        });
-    }
-
-    private function _isAlias($key) {
-        foreach ($this->_options as $name => $option) {
-            if (isset($option['aliases'])) {
-                if (in_array($key, $option['aliases'])) {
-                    return $name;
-                }
-            }
-        }
-        return false;
     }
 
     public function array($key) {
@@ -107,16 +68,6 @@ class Coax {
         });
     }
 
-    private function _arrayPushIfUnique(&$target, $key, $value) {
-        if (! isset($target[$key])) {
-            $target[$key] = [];
-        }
-        if (! in_array($value, $target[$key])) {
-            $target[$key][] = $value;
-        }
-        return $target;
-    }
-
     public function conflicts() {
         $conflicts = $this->_flatten(func_get_args());
         if (count($conflicts) < 2) throw new Exception('conflicts expects at least two params');
@@ -126,10 +77,6 @@ class Coax {
                 $this->_arrayPushIfUnique($data, 'conflicts', $conflict);
             }
         });
-    }
-
-    protected function _flatten(Array $array) {
-        return iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator($array)), FALSE);
     }
 
     public function count($key) {
@@ -217,6 +164,59 @@ class Coax {
             $this->_middleware($middleware);
         }
         return $this;
+    }
+
+    protected function _getKey($key) {
+        if (isset($this->_options[$key])) {
+            return $this->_options[$key];
+        }
+        return $this->_setKey($key);
+    }
+
+    protected function _setKey($key, $value = []) {
+        if ($this->_isAlias($key)) throw new Exception($key . ' is an existing alias.');
+        $this->_options[$key] = $value;
+        return $value;
+    }
+
+    protected function _set($key, $callback) {
+        if (! is_string($key)) throw new Exception('_set expects key to be string');
+        if (! is_callable($callback)) throw new Exception('_set expects function callback');
+        $data = $this->_getKey($key);
+        $callback($data);
+        $this->_setKey($key, $data);
+        return $this;
+    }
+
+    protected function _alias($key, $alias) {
+        $this->_set($key, function(&$data) use ($alias) {
+            $this->_arrayPushIfUnique($data, 'aliases', $alias);
+        });
+    }
+
+    protected function _isAlias($key) {
+        foreach ($this->_options as $name => $option) {
+            if (isset($option['aliases'])) {
+                if (in_array($key, $option['aliases'])) {
+                    return $name;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected function _arrayPushIfUnique(&$target, $key, $value) {
+        if (! isset($target[$key])) {
+            $target[$key] = [];
+        }
+        if (! in_array($value, $target[$key])) {
+            $target[$key][] = $value;
+        }
+        return $target;
+    }
+
+    protected function _flatten(Array $array) {
+        return iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator($array)), FALSE);
     }
 
     protected function _middleware($middleware) {
