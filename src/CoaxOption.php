@@ -11,6 +11,7 @@ class CoaxOption {
     
     public function __construct($name) {
         $this->_setName($name);
+        return $this;
     }
 
     public function getOptions() {
