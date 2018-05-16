@@ -54,7 +54,7 @@ class Coax {
         return $this;
     }
 
-    public function array($key) {
+    public function arrayLike($key) {
         return $this->_set($key, function(&$data) {
             $data['array'] = true;
         });
@@ -99,7 +99,7 @@ class Coax {
         });
     }
 
-    public function default($key, $value) {
+    public function defaultTo($key, $value) {
         return $this->_set($key, function(&$data) use ($value) {
             $data['default'] = $value;
         });
