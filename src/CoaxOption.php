@@ -37,6 +37,10 @@ class CoaxOption {
         return $this;
     }
 
+    public function getAliases() {
+        return Util::array_key_if_exists($this->_data, 'aliases');
+    }
+
     public function castToArray() {
         $this->_data['array'] = true;
         return $this;
