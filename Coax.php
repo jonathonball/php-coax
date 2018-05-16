@@ -4,6 +4,7 @@ namespace Coax;
 
 class Coax {
 
+    protected $_argv = [];
     protected $_options = [];
     protected $_epilogueMessage = '';
     protected $_failureCallback = null;
@@ -23,9 +24,9 @@ class Coax {
     public function setArguments($arguments = []) {
         if (! is_array($arguments)) throw new Exception('Coax expects array');
         if (count($arguments)) {
-            $this->argv = array_merge([basename(__FILE__)], $arguments);
+            $this->_argv = array_merge([basename(__FILE__)], $arguments);
         } else {
-            $this->argv = $GLOBALS['argv'];
+            $this->_argv = $GLOBALS['argv'];
         }
         return $this;
     }
@@ -35,7 +36,11 @@ class Coax {
      * @return array
      */
     public function getArguments() {
-        return $this->argv;
+        return $this->_argv;
+    }
+
+    public function getOptions() {
+        return $this->_options;
     }
 
     public function alias($key, $aliases) {
