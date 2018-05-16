@@ -3,6 +3,8 @@
 class Coax {
 
     protected $_options = [];
+    protected $epilogue = '';
+    protected $failureCallback = null;
 
     public function __construct($arguments = []) {
         $this->setArguments($arguments);
@@ -155,6 +157,41 @@ class Coax {
         return $this->_set($key, function(&$data) {
             $data['hidden'] = true;
         });
+    }
+
+    public function epilogue($message) {
+        $this->epilogue = $message;
+        return $this;
+    }
+
+    public function example($key, $message) {
+        return $this->_set($key, function(&$data) use ($message) {
+            $data['example'] = $message;
+        });
+    }
+
+    public function fail($callback) {
+        if (! is_callable($callback)) throw new Exception('fail expects callback');
+        $this->failureCallback = $callback;
+        return $this;
+    }
+
+    public function group($keys, $groupName) {
+        if (! is_array($keys)) {
+            $keys = [ $keys ];
+        }
+        foreach($keys as $key) {
+            $this->_set($key, function(&$data) use ($groupName) {
+                $data['group'] = $groupName;
+            });
+        }
+    }
+
+    public function help($key, $message = '') {
+        $this->alias('h', $key);
+        if (strlen($message)) {
+            $this->describe('h', $message);
+        }
     }
 
 }
