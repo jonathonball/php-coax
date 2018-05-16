@@ -31,20 +31,29 @@ class Coax {
         return $this->argv;
     }
 
-    protected function _getKey(string $key) {
+    protected function _getKey($key) {
         if (isset($this->_options[$key])) {
             return $this->_options[$key];
         }
         return $this->_setKey($key);
     }
 
-    protected function _setKey(string $key, array $value = []) {
+    protected function _setKey($key, $value = []) {
         if ($this->_isAlias($key)) throw new Exception($key . ' is an existing alias.');
         $this->_options[$key] = $value;
         return $value;
     }
 
-    public function alias(string $key, $aliases) {
+    protected function _set($key, $callback) {
+        if (! is_string($key)) throw new Exception('_set expects key to be string');
+        if (! is_callable($callback)) throw new Exception('_set expects function callback');
+        $data = $this->_getKey($key);
+        $callback($data);
+        $this->_setKey($key, $data);
+        return $this;
+    }
+
+    public function alias($key, $aliases) {
         if (is_array($aliases)) {
             foreach ($aliases as $alias) {
                 $this->_alias($key, $alias);
@@ -55,13 +64,13 @@ class Coax {
         return $this;
     }
 
-    private function _alias(string $key, string $alias) {
-        $value = $this->_getKey($key);
-        $this->_arrayPushIfUnique($value, 'aliases', $alias);
-        $this->_setKey($key, $value);
+    private function _alias($key, $alias) {
+        $this->_set($key, function(&$data) use ($alias) {
+            $this->_arrayPushIfUnique($data, 'aliases', $alias);
+        });
     }
 
-    private function _isAlias(string $key) {
+    private function _isAlias($key) {
         foreach ($this->_options as $name => $option) {
             if (isset($option['aliases'])) {
                 if (in_array($key, $option['aliases'])) {
@@ -72,34 +81,32 @@ class Coax {
         return false;
     }
 
-    public function array(string $key) {
-        $value = $this->_getKey($key);
-        $value['array'] = true;
-        $this->_setKey($key, $value);
-        return $this;
+    public function array($key) {
+        return $this->_set($key, function(&$data) {
+            $data['array'] = true;
+        });
     }
 
-    public function boolean(string $key) {
-        $value = $this->_geyKey($key);
-        $value['boolean'] = true;
-        $this->_setKey($key, $value);
-        return $this;
+    public function boolean($key) {
+        return $this->_set($key, function(&$data) {
+            $data['boolean'] = true;
+        });
     }
 
-    public function choices(string $key, array $choices) {
-        $value = $this->_getKey($key);
-        foreach ($choices as $choice) {
-            $this->_arrayPushIfUnique($value, 'choices', $choice);
-        }
-        $this->_setKey($key, $value);
-        return $this;
+    public function choices($key, $choices) {
+        return $this->_set($key, function(&$data) use ($choices) {
+            foreach ($choices as $choice) {
+                if (! is_string($choice)) throw new Exception('choices should be strings');
+                $this->_arrayPushIfUnique($value, 'choices', $choice);
+            }
+        });
     }
 
-    private function _arrayPushIfUnique(array &$target, string $key, $value) {
+    private function _arrayPushIfUnique(&$target, $key, $value) {
         if (! isset($target[$key])) {
             $target[$key] = [];
         }
-        if (! in_array($key, $target[$key])) {
+        if (! in_array($value, $target[$key])) {
             $target[$key][] = $value;
         }
         return $target;
@@ -109,43 +116,39 @@ class Coax {
         $conflicts = $this->_flatten(func_get_args());
         if (count($conflicts) < 2) throw new Exception('conflicts expects at least two params');
         $key = array_shift($conflicts);
-        $value = $this->_getKey($key);
-        foreach ($conflicts as $conflict) {
-            $this->_arrayPushIfUnique($value, 'conflicts', $conflict);
-        }
-        $this->_setKey($key, $value);
+        return $this->_set($key, function(&$data) use ($conflicts) {
+            foreach ($conflicts as $conflict) {
+                $this->_arrayPushIfUnique($data, 'conflicts', $conflict);
+            }
+        });
     }
 
-    private function _flatten(Array $array) {
+    protected function _flatten(Array $array) {
         return iterator_to_array(new RecursiveIteratorIterator(new RecursiveArrayIterator($array)), FALSE);
     }
 
     public function count($key) {
-        $value = $this->_getKey($key);
-        $value['count'] = true;
-        $this->_setKey($key, $value);
-        return $this;
+        return $this->_set($key, function(&$data) {
+            $data['count'] = true;
+        });
     }
 
     public function default($key, $value) {
-        $data = $this->_getKey($key);
-        $data['default'] = $value;
-        $this->_setKey($key, $data);
-        return $this;
+        return $this->_set($key, function(&$data) use ($value) {
+            $data['default'] = $value;
+        });
     }
 
     public function demand($key, $message = '') {
-        $data = $this->_getKey($key);
-        $data['demand'] = $message;
-        $this->_setKey($key, $data);
-        return $this;
+        return $this->_set($key, function(&$data) use ($message) {
+            $data['demand'] = $message;
+        });
     }
 
     public function describe($key, $message = '') {
-        $data = $this->_getKey($key);
-        $data['description'] = $message;
-        $this->_setKey($key, $data);
-        return $this;
+        return $this->_set($key, function(&$data) use ($message) {
+            $data['description'] = $message;
+        });
     }
 
     public function hide($key) {
@@ -154,33 +157,4 @@ class Coax {
         });
     }
 
-    protected function _set() {
-        $arguments = func_get_args();
-        if (count($arguments) < 2) throw new Exception('set expects two arguments');
-        $key = array_shift($arguments);
-        if (! is_string($key)) throw new Exception('set expects argument one to be string');
-        $callback = array_shift($arguments);
-        if (! is_callable($callback)) throw new Exception('set expects argument two to be function');
-        $data = $this->_getKey($key);
-        if (count($arguments)) {
-            $callback($data, $arguments);
-        } else {
-            $callback($data);
-        }
-        $this->_setKey($key, $data);
-        return $this;
-    }
 }
-
-/*
-$test = new Coax();
-$test->alias('a', ['b', 'c', 'tacos'])
-     ->array('a')
-     ->array('stuff')
-     ->choices('brand', ['imh', 'hub'])
-     ->conflicts('a', ['b', 'c'], 'd')
-     ->hide('secret');
-     //->debug();
-
-var_dump($test);
-*/
