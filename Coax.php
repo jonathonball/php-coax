@@ -1,5 +1,7 @@
 <?php
 
+namespace PhpCoax;
+
 class Coax {
 
     protected $_options = [];
