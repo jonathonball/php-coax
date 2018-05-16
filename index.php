@@ -8,6 +8,11 @@ class Coax {
         $this->setArguments($arguments);
     }
 
+    /**
+     * Sets the values to use as argv[]
+     * @param array $arguments
+     * @return $this
+     */
     public function setArguments($arguments = []) {
         if (! is_array($arguments)) throw new Exception('Coax expects array');
         if (count($arguments)) {
@@ -18,6 +23,10 @@ class Coax {
         return $this;
     }
 
+    /**
+     * Gets the values representing argv[]
+     * @return array
+     */
     public function getArguments() {
         return $this->argv;
     }
@@ -125,9 +134,16 @@ class Coax {
         return $this;
     }
 
-    public function demand($key, $msg = true) {
+    public function demand($key, $message = '') {
         $data = $this->_getKey($key);
-        $data['demand'] = $msg;
+        $data['demand'] = $message;
+        $this->_setKey($key, $data);
+        return $this;
+    }
+
+    public function describe($key, $message) {
+        $data = $this->_getKey($key);
+        $data['description'] = $message;
         $this->_setKey($key, $data);
         return $this;
     }
