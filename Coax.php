@@ -68,6 +68,13 @@ class Coax {
         });
     }
 
+    public function coerce($key, $callback) {
+        if (! is_callable($callback)) throw new Exception('coerce expects callback to be callable');
+        return $this->_set($key, function(&$data) use ($callback) {
+            $data['coercionCallback'] = $callback;
+        });
+    }
+
     public function conflicts() {
         $conflicts = $this->_flatten(func_get_args());
         if (count($conflicts) < 2) throw new Exception('conflicts expects at least two params');
