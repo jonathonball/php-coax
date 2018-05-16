@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpCoax;
+namespace Coax;
 
 class Coax {
 
