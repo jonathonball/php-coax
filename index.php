@@ -3,8 +3,9 @@
 class Coax {
 
     protected $_options = [];
-    protected $epilogue = '';
-    protected $failureCallback = null;
+    protected $_epilogue = '';
+    protected $_failureCallback = null;
+    protected $_middlewares = [];
 
     public function __construct($arguments = []) {
         $this->setArguments($arguments);
@@ -160,7 +161,7 @@ class Coax {
     }
 
     public function epilogue($message) {
-        $this->epilogue = $message;
+        $this->_epilogue = $message;
         return $this;
     }
 
@@ -172,7 +173,7 @@ class Coax {
 
     public function fail($callback) {
         if (! is_callable($callback)) throw new Exception('fail expects callback');
-        $this->failureCallback = $callback;
+        $this->_failureCallback = $callback;
         return $this;
     }
 
@@ -192,6 +193,32 @@ class Coax {
         if (strlen($message)) {
             $this->describe('h', $message);
         }
+    }
+
+    public function implies($key, $otherKey) {
+        return $this->_set($key, function(&$data) use ($otherKey) {
+            $data['requires'] = $otherKey;
+        });
+    }
+
+    public function nargs($key, $n) {
+        return $this->_set($key, function(&$data) use ($n) {
+            $data['nargs'] = $n;
+        });
+    }
+
+    public function middleware($middlewares) {
+        if (! is_array($middlewares)) {
+            $middlewares = [ $middlewares ];
+        }
+        foreach ($middlewares as $middleware) {
+            $this->_middleware($middleware);
+        }
+    }
+
+    protected function _middleware($middleware) {
+        if (! is_callable($middleware)) throw new Exception('middleware must be callable');
+        $this->_middlewares[] = $middleware;
     }
 
 }
