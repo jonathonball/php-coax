@@ -3,6 +3,7 @@
 namespace Coax;
 
 use Coax\Util;
+use Coax\CoaxOption;
 
 class CoaxOptions {
 
@@ -17,6 +18,9 @@ class CoaxOptions {
     }
 
     public function alias($tag, $aliases) {
+        return $this->_set($tag, function(&$option) use ($aliases) {
+            $option->alias($aliases);
+        });
     }
 
     public function castToArray($tag) {
@@ -89,9 +93,6 @@ class CoaxOptions {
     public function castToNumber($tag) {
     }
 
-    public function option($tag) {
-    }
-
     public function showHelpOnFail($message = '') {
         if (strlen($message)) {
             $this->_showHelpOnFail = $message;
@@ -104,16 +105,26 @@ class CoaxOptions {
     public function castToString($tag) {
     }
 
-    protected function _getKey($tag) {
-
+    protected function _getTag($tag) {
+        if (! isset($this->_options[$tag])) {
+            return $this->_setTag($tag, new CoaxOption($tag));
+        }
+        return $this->_options[$tag];
     }
 
-    protected function _setKey($tag, $value) {
+    protected function _setTag($tag, $value) {
         //if ($this->_isAlias($tag)) throw new Exception($tag . ' is an existing alias.');
-
+        $this->_options[$tag] = $value;
+        return $this;
     }
 
     protected function _set($tag, $callback) {
+        if (! is_string($tag)) throw new Exception('_set expects tag to be string');
+        if (! is_callable($callback)) throw new Exception('_set expects callback to be callable');
+        $option = $this->_getTag($tag);
+        $callback($option);
+        $this->_setTag($tag, $option);
+        return $this;
     }
 
     protected function _isAlias($tag) {
