@@ -24,33 +24,64 @@ class CoaxOptions {
     }
 
     public function castToArray($tag) {
+        return $this->_set($tag, function(&$option) {
+            $option->castToArray();
+        });
     }
 
     public function castToBoolean($tag) {
+        return $this->_set($tag, function(&$option) {
+            $option->castToBoolean();
+        });
     }
 
     public function choices($tag, $choices) {
+        return $this->_set($tag, function(&$option) use ($choices) {
+            $option->choices($choices);
+        });
     }
 
     public function coerce($tag, $callback) {
+        return $this->_set($tag, function(&$option) use ($callback) {
+            $option->coerce($callback);
+        });
     }
 
     public function conflicts() {
+        $arguments = func_get_args();
+        return $this->_set($tag, function(&$option) use ($arguments) {
+            $option->conflicts($arguments);
+        });
     }
 
     public function count($tag) {
+        return $this->_set($tag, function(&$option) {
+            $option->count();
+        });
     }
 
     public function defaultTo($tag, $value) {
+        return $this->_set($tag, function(&$option) use ($value) {
+            $option->defaultTo($value);
+        });
     }
 
     public function demand($tag, $message = '') {
+        return $this->_set($tag, function(&$option) use ($message) {
+            $option->demand($message);
+        });
     }
 
     public function describe($tag, $message = '') {
+        return $this->_set($tag, function(&$option) use ($message) {
+            $option->describe($message);
+        });
     }
 
-    public function hide($tag) {
+    public function hide($tag, $value) {
+        return $this->_set($tag, function(&$option) use ($value) {
+            $option->hide($message);
+        });
     }
 
     public function epilogue($message) {
@@ -59,6 +90,9 @@ class CoaxOptions {
     }
 
     public function example($tag, $message) {
+        return $this->_set($tag, function(&$option) use ($message) {
+            $option->example($message);
+        });
     }
 
     public function fail($callback) {
@@ -68,12 +102,21 @@ class CoaxOptions {
     }
 
     public function group($tags, $groupName) {
+        return $this->_set($tag, function(&$option) use ($groupName) {
+            $option->group($groupName);
+        });
     }
 
-    public function help($tag, $message = '') {
+    public function help($tag) {
+        return $this->_set($tag, function(&$option) {
+            $option->help();
+        });
     }
 
-    public function implies($tag, $otherKey) {
+    public function implies($tag, $otherKeys) {
+        return $this->_set($tag, function(&$option) use ($otherKeys) {
+            $option->implies($otherKeys);
+        });
     }
 
     public function middleware($middlewares) {
@@ -88,9 +131,15 @@ class CoaxOptions {
     }
 
     public function nargs($tag, $n) {
+        return $this->_set($tag, function(&$option) use ($n) {
+            $option->nargs($n);
+        });
     }
 
     public function castToNumber($tag) {
+        return $this->_set($tag, function(&$option) {
+            $option->castToNumber();
+        });
     }
 
     public function showHelpOnFail($message = '') {
@@ -103,6 +152,9 @@ class CoaxOptions {
     }
 
     public function castToString($tag) {
+        return $this->_set($tag, function(&$option) {
+            $option->castToString();
+        });
     }
 
     protected function _getTag($tag) {
@@ -113,9 +165,9 @@ class CoaxOptions {
     }
 
     protected function _setTag($tag, $value) {
-        //if ($this->_isAlias($tag)) throw new Exception($tag . ' is an existing alias.');
+        if ($this->_isAlias($tag)) throw new Exception($tag . ' is an existing alias.');
         $this->_options[$tag] = $value;
-        return $this;
+        return $value;
     }
 
     protected function _set($tag, $callback) {
@@ -128,6 +180,11 @@ class CoaxOptions {
     }
 
     protected function _isAlias($tag) {
+        foreach ($this->_options as $name => $option) {
+            $aliases = $option->getKey('aliases');
+            if (in_array($tag, $aliases)) return $name;
+        }
+        return false;
     }
 
 }
