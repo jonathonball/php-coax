@@ -9,5 +9,10 @@
             "email": "jonathon.ball@gmail.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "classmap": [
+	    "src/Coax.php"
+	]	
+    }
 }
