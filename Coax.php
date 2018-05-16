@@ -5,9 +5,11 @@ namespace Coax;
 class Coax {
 
     protected $_options = [];
-    protected $_epilogue = '';
+    protected $_epilogueMessage = '';
     protected $_failureCallback = null;
     protected $_middlewares = [];
+    protected $_showHelpOnFail = true;
+    protected $_showHelpOnFailMessage = '';
 
     public function __construct($arguments = []) {
         $this->setArguments($arguments);
@@ -117,7 +119,7 @@ class Coax {
     }
 
     public function epilogue($message) {
-        $this->_epilogue = $message;
+        $this->_epilogueMessage = $message;
         return $this;
     }
 
@@ -170,6 +172,12 @@ class Coax {
         foreach ($middlewares as $middleware) {
             $this->_middleware($middleware);
         }
+        return $this;
+    }
+
+    public function showHelpOnFail($value = true, $message = '') {
+        $this->_showHelpOnFail = ($value === false) ? false : true;
+        $this->_showHelpOnFailMessage = (strlen($message)) ? $message : '';
         return $this;
     }
 
