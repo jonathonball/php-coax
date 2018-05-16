@@ -165,6 +165,12 @@ class Coax {
         });
     }
 
+    public function number($key) {
+        return $this->_set($key, function(&$data) {
+            $data['number'] = true;
+        });
+    }
+
     public function middleware($middlewares) {
         if (! is_array($middlewares)) {
             $middlewares = [ $middlewares ];
@@ -179,6 +185,12 @@ class Coax {
         $this->_showHelpOnFail = ($value === false) ? false : true;
         $this->_showHelpOnFailMessage = (strlen($message)) ? $message : '';
         return $this;
+    }
+
+    public function string($key) {
+        return $this->_set($key, function(&$data) {
+            $data['string'] = true;
+        });
     }
 
     protected function _getKey($key) {
