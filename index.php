@@ -141,13 +141,35 @@ class Coax {
         return $this;
     }
 
-    public function describe($key, $message) {
+    public function describe($key, $message = '') {
         $data = $this->_getKey($key);
         $data['description'] = $message;
         $this->_setKey($key, $data);
         return $this;
     }
 
+    public function hide($key) {
+        return $this->_set($key, function(&$data) {
+            $data['hidden'] = true;
+        });
+    }
+
+    protected function _set() {
+        $arguments = func_get_args();
+        if (count($arguments) < 2) throw new Exception('set expects two arguments');
+        $key = array_shift($arguments);
+        if (! is_string($key)) throw new Exception('set expects argument one to be string');
+        $callback = array_shift($arguments);
+        if (! is_callable($callback)) throw new Exception('set expects argument two to be function');
+        $data = $this->_getKey($key);
+        if (count($arguments)) {
+            $callback($data, $arguments);
+        } else {
+            $callback($data);
+        }
+        $this->_setKey($key, $data);
+        return $this;
+    }
 }
 
 /*
@@ -156,7 +178,8 @@ $test->alias('a', ['b', 'c', 'tacos'])
      ->array('a')
      ->array('stuff')
      ->choices('brand', ['imh', 'hub'])
-     ->conflicts('a', ['b', 'c'], 'd');
+     ->conflicts('a', ['b', 'c'], 'd')
+     ->hide('secret');
      //->debug();
 
 var_dump($test);
