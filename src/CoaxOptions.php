@@ -136,6 +136,12 @@ class CoaxOptions {
         });
     }
 
+    public function option($tag) {
+        $data = $this->_getTag($tag);
+        $this->_setTag($tag, $data);
+        return $this;
+    }
+
     public function castToNumber($tag) {
         return $this->_set($tag, function(&$option) {
             $option->castToNumber();

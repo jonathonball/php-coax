@@ -6,8 +6,12 @@ use Coax\CoaxOptions;
 
 class Coax {
 
+    protected $_options = null;
+    protected $_argv = null;
+
     public function __construct($arguments = []) {
         $this->setArguments($arguments);
+        $this->_options = new CoaxOptions();
     }
 
     /**
@@ -31,6 +35,10 @@ class Coax {
      */
     public function getArguments() {
         return $this->_argv;
+    }
+
+    public function options() {
+        return $this->_options;
     }
 
 }
