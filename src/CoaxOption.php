@@ -7,25 +7,26 @@ use Coax\Util;
 class CoaxOption {
 
     protected $_data = [];
-    protected $_name = '';
+    protected $_tag = '';
     
-    public function __construct($name) {
-        $this->_setName($name);
+    public function __construct($tag) {
+        $this->_setTag($tag);
         return $this;
     }
 
+    // TODO rename getData
     public function getOptions() {
         return $this->_data;
     }
 
-    protected function _setName($name) {
-        if (! is_string($name)) throw new \Exception('CoaxOption expects name to be string');
-        $this->_name = $name;
+    protected function _setTag($tag) {
+        if (! is_string($tag)) throw new \Exception('CoaxOption expects tag to be string');
+        $this->_tag = $tag;
         return $this;
     }
 
-    public function getName() {
-        return $this->_name;
+    public function getTag() {
+        return $this->_tag;
     }
 
     public function alias($aliases) {
