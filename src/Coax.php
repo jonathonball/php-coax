@@ -37,8 +37,27 @@ class Coax {
         return $this->_argv;
     }
 
-    public function options() {
-        return $this->_options;
+    /**
+     * Finds or creates a new command line option
+     * @param string|CoaxOption $option An option tag or object
+     * @return Coax\CoaxOption
+     */
+    public function option($option) {
+        return $this->_options->option($option);
     }
 
+    /**
+     * Finds or creates an array of tags or options
+     * @param array $array Array of string or Coax\CoaxOption
+     * @return Coax\CoaxOption
+     */
+    public function options($options = null) {
+        if ($options === null) return $this->_options;
+        if (! is_array($options)) {
+            $options = [ $options ];
+        }
+        foreach ($options as $option) {
+            $this->option($option);
+        }
+    }
 }
