@@ -2,6 +2,8 @@
 
 namespace Coax;
 
+use Coax\CoaxOption;
+
 class Util {
 
     public static function flatten($array) {
@@ -18,8 +20,13 @@ class Util {
         return $target;
     }
 
-    public static function array_key_if_exists(&$target, $key) {
+    public static function array_key_if_exists($target, $key) {
         if (! isset($target[$key])) return null;
         return $target[$key];
     }
+
+    public static function is_coax_option($thing) {
+        return ($thing instanceof CoaxOption);
+    }
+
 }
