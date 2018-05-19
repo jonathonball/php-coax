@@ -15,7 +15,7 @@ class CoaxOption {
     }
 
     // TODO rename getData
-    public function getOptions() {
+    public function getData() {
         return $this->_data;
     }
 
@@ -26,7 +26,7 @@ class CoaxOption {
         }
         if ($tag instanceof Coax\CoaxOption) {
             $this->_tag = $tag->getTag();
-            $this->_data = $tag->getOptions();
+            $this->_data = $tag->getData();
             return $this;
         }
         throw new \Exception('CoaxOption expects tag to be string or CoaxOption');
