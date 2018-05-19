@@ -20,9 +20,16 @@ class CoaxOption {
     }
 
     protected function _setTag($tag) {
-        if (! is_string($tag)) throw new \Exception('CoaxOption expects tag to be string');
-        $this->_tag = $tag;
-        return $this;
+        if (is_string($tag)) {
+            $this->_tag = $tag;
+            return $this;
+        }
+        if ($tag instanceof Coax\CoaxOption) {
+            $this->_tag = $tag->getTag();
+            $this->_data = $tag->getOptions();
+            return $this;
+        }
+        throw new \Exception('CoaxOption expects tag to be string or CoaxOption');
     }
 
     public function getTag() {
