@@ -14,7 +14,6 @@ class CoaxOption {
         return $this;
     }
 
-    // TODO rename getData
     public function getData() {
         return $this->_data;
     }
