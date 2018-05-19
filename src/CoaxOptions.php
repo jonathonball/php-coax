@@ -139,7 +139,7 @@ class CoaxOptions {
     public function option($tag) {
         $data = $this->_getTag($tag);
         $this->_setTag($tag, $data);
-        return $this;
+        return $data;
     }
 
     public function castToNumber($tag) {
@@ -164,14 +164,23 @@ class CoaxOptions {
     }
 
     protected function _getTag($tag) {
+        if (Util::is_coax_option($tag)) return $this->_getCoaxOption($tag);
         if (! isset($this->_options[$tag])) {
             return $this->_setTag($tag, new CoaxOption($tag));
         }
         return $this->_options[$tag];
     }
 
+    protected function _getCoaxOption($option) {
+        $tag = $option->getTag();
+        if (! isset($this->_options[$tag])) {
+            return $this->_setTag($tag, $option);
+        }
+    }
+
     protected function _setTag($tag, $value) {
-        if ($this->_isAlias($tag)) throw new Exception($tag . ' is an existing alias.');
+        if ($this->_isAlias($tag)) throw new \Exception($tag . ' is an existing alias.');
+        $tag = (Util::is_coax_option($tag)) ? $tag->getTag() : $tag;
         $this->_options[$tag] = $value;
         return $value;
     }
@@ -188,7 +197,7 @@ class CoaxOptions {
     protected function _isAlias($tag) {
         foreach ($this->_options as $name => $option) {
             $aliases = $option->getKey('aliases');
-            if (in_array($tag, $aliases)) return $name;
+            if ($aliases && in_array($tag, $aliases)) return $name;
         }
         return false;
     }
