@@ -21,4 +21,13 @@ class CoaxOptionTest extends TestCase {
         }
     }
 
+    public function testCanCreateFromCoaxOption() {
+        foreach ($this->goodTags as $tag) {
+            $coaxOption = new CoaxOption($tag);
+            $this->assertInstanceOf(
+                'Coax\CoaxOption',
+                new CoaxOption($tag)
+            );
+        }
+    }
 }
