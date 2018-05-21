@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 use Coax\Util;
 use Coax\CoaxOption;
 
-class EmailTest extends TestCase {
+class UtilTest extends TestCase {
 
     protected $exampleOption;
 
