@@ -186,8 +186,8 @@ class CoaxOptions {
     }
 
     protected function _set($tag, $callback) {
-        if (! is_string($tag)) throw new Exception('_set expects tag to be string');
-        if (! is_callable($callback)) throw new Exception('_set expects callback to be callable');
+        if (! is_string($tag)) throw new \Exception('_set expects tag to be string');
+        if (! is_callable($callback)) throw new \Exception('_set expects callback to be callable');
         $option = $this->_getTag($tag);
         $callback($option);
         $this->_setTag($tag, $option);
