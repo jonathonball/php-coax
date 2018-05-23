@@ -16,4 +16,12 @@ class CoaxTest extends TestCase {
         );
     }
 
+    public function testOptionsAccess() {
+        $test = new Coax();
+        $this->assertInstanceOf(
+            'Coax\CoaxOptions',
+            $test->options()
+        );
+    }
+
 }
