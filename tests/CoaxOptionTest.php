@@ -2,22 +2,11 @@
 
 use PHPUnit\Framework\TestCase;
 use Coax\CoaxOption;
+require_once("CoaxProviders.php");
 
 class CoaxOptionTest extends TestCase {
 
-    public function goodTagProvider() {
-        return [
-            ['e'],
-            ['example']
-        ];
-    }
-
-    public function badTagProvider() {
-        return [
-            [1],
-            [new stdClass]
-        ];
-    }
+    use CoaxProviders;
 
     /**
      * @dataProvider goodTagProvider
