@@ -29,14 +29,4 @@ class CoaxOptionTest extends TestCase {
         );
     }
 
-    /**
-     * @dataProvider goodTagProvider
-     */
-    public function testCanCreateFromCoaxOption($tag) {
-        $this->assertInstanceOf(
-            'Coax\CoaxOption',
-            new CoaxOption($tag)
-        );
-    }
-
 }
