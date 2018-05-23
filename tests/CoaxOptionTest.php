@@ -26,8 +26,9 @@ class CoaxOptionTest extends TestCase {
             $coaxOption = new CoaxOption($tag);
             $this->assertInstanceOf(
                 'Coax\CoaxOption',
-                new CoaxOption($tag)
+                $coaxOption
             );
         }
     }
+
 }
