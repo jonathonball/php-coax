@@ -27,4 +27,20 @@ class CoaxOptionTest extends TestCase {
         );
     }
 
+    public function testRequiredWithMessage() {
+        $message = 'example param is required';
+        $option = new CoaxOption('example');
+        $option->demand('example param is required');
+        $this->assertEquals(
+            $message,
+            $option->isRequired()
+        );
+    }
+
+    public function testRequiredWithoutMessage() {
+        $option = new CoaxOption('example');
+        $option->demand();
+        $this->assertTrue($option->isRequired());
+    }
+
 }

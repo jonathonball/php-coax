@@ -161,10 +161,10 @@ class CoaxOption {
     }
 
     public function isRequired() {
-        return (
-            array_key_exists('required', $this->_data)
-            && $this->_data['required']
-        );
+        if (array_key_exists('required', $this->_data)) {
+            return $this->_data['required'];
+        }
+        return false;
     }
 
 }
