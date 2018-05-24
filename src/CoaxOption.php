@@ -23,7 +23,7 @@ class CoaxOption {
             $this->_tag = $tag;
             return $this;
         }
-        if ($tag instanceof Coax\CoaxOption) {
+        if ($tag instanceof CoaxOption) {
             $this->_tag = $tag->getTag();
             $this->_data = $tag->getData();
             return $this;
@@ -158,6 +158,13 @@ class CoaxOption {
     public function stringLike() {
         $this->_data['string'] = true;
         return $this;
+    }
+
+    public function isRequired() {
+        return (
+            array_key_exists('required', $this->_data)
+            && $this->_data['required']
+        );
     }
 
 }

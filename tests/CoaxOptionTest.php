@@ -8,13 +8,22 @@ class CoaxOptionTest extends TestCase {
 
     use CoaxProviders;
 
-    /**
-     * @dataProvider goodTagProvider
-     */
-    public function testCanCreateFromString($tag) {
+    public function testCanCreateFromString() {
+        $option = new CoaxOption('example');
         $this->assertInstanceOf(
             'Coax\CoaxOption',
-            new CoaxOption($tag)
+            $option
+        );
+        return $option;
+    }
+
+    /**
+     * @depends testCanCreateFromString
+     */
+    public function testCanCreateFromCoxOption($option) {
+        $this->assertInstanceOf(
+            'Coax\CoaxOption',
+            new CoaxOption($option)
         );
     }
 
