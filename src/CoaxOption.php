@@ -96,10 +96,14 @@ class CoaxOption {
     }
 
     public function demand($message = '') {
+        return $this->required($message);
+    }
+
+    public function required($message = '') {
         if (strlen($message)) {
-            $this->_data['demand'] = $message;
+            $this->_data['required'] = $message;
         } else {
-            $this->_data['demand'] = true;
+            $this->_data['required'] = true;
         }
         return $this;
     }
