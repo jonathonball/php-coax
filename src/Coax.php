@@ -60,4 +60,15 @@ class Coax {
             $this->option($option);
         }
     }
+
+    // single letter is always /^-[[:alphanum:]]{1}/
+    // multi letter is always /^--[[:alphanum:]]{2,}/
+    // everything else is either a param argument
+    // or a positional param (_)
+    public function parse() {
+        $output = [];
+        $arguments = $this->getArguments();
+        $output['$0'] = array_shift($arguments);
+    }
+
 }
