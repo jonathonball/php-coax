@@ -1,5 +1,7 @@
 <?php
 
+use Coax\CoaxOption;
+
 trait CoaxProviders {
 
     public function goodTagProvider() {
@@ -13,6 +15,13 @@ trait CoaxProviders {
         return [
             [1],
             [new stdClass]
+        ];
+    }
+
+    public function coaxOptionProvider() {
+        return [
+            [new CoaxOption('a'), 'a'],
+            [new CoaxOption('b'), 'b']
         ];
     }
 
