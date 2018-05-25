@@ -5,7 +5,7 @@ namespace Coax;
 use Coax\Util;
 use Coax\CoaxOption;
 
-class CoaxOptions {
+class CoaxOptions extends CoaxOptionsIterable {
 
     protected $_options = [];
     protected $_epilogueMessage = '';
