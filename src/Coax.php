@@ -8,6 +8,7 @@ class Coax {
 
     protected $_options = null;
     protected $_argv = null;
+    protected $_parsed = [];
 
     public function __construct($arguments = []) {
         $this->setArguments($arguments);
@@ -66,9 +67,8 @@ class Coax {
     // everything else is either a param argument
     // or a positional param (_)
     public function parse() {
-        $output = [];
         $arguments = $this->getArguments();
-        $output['$0'] = array_shift($arguments);
+        $this->_parsed['$0'] = array_shift($arguments);
     }
 
 }
