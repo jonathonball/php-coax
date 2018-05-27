@@ -71,6 +71,10 @@ class CoaxOptions extends CoaxOptionsIterable {
     }
 
     public function demand($tag, $message = '') {
+        return $this->required($tag, $message = '');
+    }
+
+    public function required($tag, $message = '') {
         return $this->_set($tag, function(&$option) use ($message) {
             $option->demand($message);
         });
