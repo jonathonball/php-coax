@@ -17,6 +17,10 @@ class CoaxOptions extends CoaxOptionsIterable {
         return $this->_options;
     }
 
+    public function getTag($tag) {
+        return Util::array_key_if_exists($this->_options, $tag);
+    }
+
     public function alias($tag, $aliases) {
         return $this->_set($tag, function(&$option) use ($aliases) {
             $option->alias($aliases);
