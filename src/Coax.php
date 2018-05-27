@@ -62,13 +62,57 @@ class Coax {
         }
     }
 
-    // single letter is always /^-[[:alphanum:]]{1}/
-    // multi letter is always /^--[[:alphanum:]]{2,}/
-    // everything else is either a param argument
-    // or a positional param (_)
     public function parse() {
+        try {
+            return $this->_parse();
+        } catch(\Exception $e) {
+            echo $e->getMessage() . "\n";
+            die(1);
+        }
+    }
+
+    // TODO parser needs to set an "inspected" setting on each options
+    protected function _parse() {
         $arguments = $this->getArguments();
         $this->_parsed['$0'] = array_shift($arguments);
+        $this->_parsed['_'] = [];
+        // read in first argument
+        $currentArgument = $this->extractArgument($arguments);
+        while ($currentArgument !== null) {
+            $currentTag = $this->isTag($currentArgument);
+            $currentData = $this->options()->getTag($currentTag);
+            if ($currentTag && ! $currentData) {
+                $this->_parsed['failures'][] = new \Exception('Unrecognized argument: ' . $currentTag);
+            } elseif ($currentTag && $currentData) {
+                $this->_parsed[$currentTag] = [];
+                // TODO do inspection of argument
+                // TODO if argument has params attempt reaad them in
+            } else {
+                $this->_parsed['_'][] = $currentArgument;
+            }
+            // read in next argument
+            $currentArgument = $this->extractArgument($arguments);
+        }
+        // TODO check that each requirement is "inspected"
+        return $this->_parsed;
+    }
+
+    protected function extractArgument(&$arguments) {
+        if (! is_array($arguments)) throw new \Exception('extractArgument expects array as first argument.');
+        if (! count($arguments)) return null;
+        return array_shift($arguments);
+    }
+
+    /**
+     * Determines if an argument is a tag
+     * @param string $argument
+     * @return string|boolean The tag without hyphens or false
+     */
+    protected function isTag($argument) {
+        if (preg_match('/^-{1,2}[a-zA-Z0-9]\w*/', $argument)) {
+            return str_replace('-', '', $argument);
+        }
+        return false;
     }
 
 }
