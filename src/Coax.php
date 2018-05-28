@@ -76,6 +76,7 @@ class Coax {
         $arguments = $this->getArguments();
         $this->_parsed['$0'] = array_shift($arguments);
         $this->_parsed['_'] = [];
+        $this->_parsed['failures'] = [];
         // read in first argument
         $currentArgument = $this->extractArgument($arguments);
         while ($currentArgument !== null) {
