@@ -43,4 +43,23 @@ class CoaxOptionsTest extends TestCase {
         $this->assertEquals(count($tags), $count);
     }
 
+    public function testAlias() {
+        $options = new CoaxOptions();
+        $options->option('a')->alias('b');
+        $this->assertEquals('a', $options->isAlias('b'));
+    }
+
+    public function testAliasFromArray() {
+        $options = new CoaxOptions();
+        $options->option('x')->alias(['y', 'z']);
+        $this->assertEquals('x', $options->isAlias('y'));
+        $this->assertEquals('x', $options->isAlias('z'));
+    }
+
+    public function testAliasFromAssignment() {
+        $options = new CoaxOptions();
+        $options->option('a')->alias('b');
+        $this->assertEquals('a', $options->option('b')->getTag());
+    }
+
 }

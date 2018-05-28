@@ -43,4 +43,14 @@ class CoaxOptionTest extends TestCase {
         $this->assertTrue($option->isRequired());
     }
 
+    public function testAlias() {
+        $option = new CoaxOption('a');
+        $option->alias('alpha');
+        $data = $option->getData();
+        $this->assertEquals(
+            $data['aliases'],
+            ['alpha']
+        );
+    }
+
 }
