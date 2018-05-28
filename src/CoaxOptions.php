@@ -195,7 +195,7 @@ class CoaxOptions extends CoaxOptionsIterable {
     }
 
     protected function _setTag($tag, $value) {
-        if ($this->_isAlias($tag)) throw new \Exception($tag . ' is an existing alias.');
+        if ($this->isAlias($tag)) throw new \Exception($tag . ' is an existing alias.');
         $tag = (Util::is_coax_option($tag)) ? $tag->getTag() : $tag;
         $this->_options[$tag] = $value;
         return $value;
@@ -210,7 +210,7 @@ class CoaxOptions extends CoaxOptionsIterable {
         return $this;
     }
 
-    protected function _isAlias($tag) {
+    public function isAlias($tag) {
         foreach ($this->_options as $name => $option) {
             $aliases = $option->getKey('aliases');
             if ($aliases && in_array($tag, $aliases)) return $name;

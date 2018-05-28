@@ -87,7 +87,7 @@ class Coax {
             } elseif ($currentTag && $currentData) {
                 $this->_parsed[$currentTag] = [];
                 // TODO do inspection of argument
-                // TODO if argument has params attempt reaad them in
+                // TODO if argument has params attempt read them in
             } else {
                 $this->_parsed['_'][] = $currentArgument;
             }
