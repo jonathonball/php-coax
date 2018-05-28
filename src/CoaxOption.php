@@ -35,6 +35,14 @@ class CoaxOption {
         return $this->_tag;
     }
 
+    public function getKey($key) {
+        return Util::array_key_if_exists($this->_data, $key);
+    }
+
+    /**
+     * API functions
+     */
+
     public function alias($aliases) {
         if (! is_array($aliases)) {
             $aliases = [ $aliases ];
@@ -45,10 +53,6 @@ class CoaxOption {
         return $this;
     }
 
-    public function getKey($key) {
-        return Util::array_key_if_exists($this->_data, $key);
-    }
-
     public function castToArray() {
         $this->_data['array'] = true;
         return $this;
@@ -56,6 +60,16 @@ class CoaxOption {
 
     public function castToBoolean() {
         $this->_data['boolean'] = true;
+        return $this;
+    }
+
+    public function castToNumber() {
+        $this->_data['number'] = true;
+        return $this;
+    }
+
+    public function castToString() {
+        $this->_data['string'] = true;
         return $this;
     }
 
@@ -123,12 +137,6 @@ class CoaxOption {
         return $this;
     }
 
-    public function help() {
-        $this->alias('h');
-        $this->describe('An alias for -h');
-        return $this;
-    }
-
     public function hide($value = true) {
         $this->_data['hidden'] = ($value === false) ? false : true;
         return $this;
@@ -150,15 +158,15 @@ class CoaxOption {
         return $this;
     }
 
-    public function numberLike() {
-        $this->_data['number'] = true;
+    public function help() {
+        $this->alias('h');
+        $this->describe('An alias for -h');
         return $this;
     }
 
-    public function stringLike() {
-        $this->_data['string'] = true;
-        return $this;
-    }
+    /**
+     * END api functions
+     */
 
     public function isRequired() {
         if (array_key_exists('required', $this->_data)) {

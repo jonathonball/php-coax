@@ -21,6 +21,10 @@ class CoaxOptions extends CoaxOptionsIterable {
         return Util::array_key_if_exists($this->_options, $tag);
     }
 
+    /**
+     * API functions
+     */
+
     public function alias($tag, $aliases) {
         return $this->_set($tag, function(&$option) use ($aliases) {
             $option->alias($aliases);
@@ -36,6 +40,18 @@ class CoaxOptions extends CoaxOptionsIterable {
     public function castToBoolean($tag) {
         return $this->_set($tag, function(&$option) {
             $option->castToBoolean();
+        });
+    }
+
+    public function castToNumber($tag) {
+        return $this->_set($tag, function(&$option) {
+            $option->castToNumber();
+        });
+    }
+
+    public function castToString($tag) {
+        return $this->_set($tag, function(&$option) {
+            $option->castToString();
         });
     }
 
@@ -86,32 +102,33 @@ class CoaxOptions extends CoaxOptionsIterable {
         });
     }
 
-    public function hide($tag, $value) {
-        return $this->_set($tag, function(&$option) use ($value) {
-            $option->hide($message);
-        });
-    }
-
-    public function epilogue($message) {
-        $this->_epilogueMessage = $message;
-        return $this;
-    }
-
     public function example($tag, $message) {
         return $this->_set($tag, function(&$option) use ($message) {
             $option->example($message);
         });
     }
 
-    public function fail($callback) {
-        if (! is_callable($callback)) throw new Exception('fail expects callback');
-        $this->_failureCallback = $callback;
-        return $this;
-    }
-
     public function group($tags, $groupName) {
         return $this->_set($tag, function(&$option) use ($groupName) {
             $option->group($groupName);
+        });
+    }
+
+    public function hide($tag, $value) {
+        return $this->_set($tag, function(&$option) use ($value) {
+            $option->hide($message);
+        });
+    }
+
+    public function implies($tag, $otherKeys) {
+        return $this->_set($tag, function(&$option) use ($otherKeys) {
+            $option->implies($otherKeys);
+        });
+    }
+
+    public function nargs($tag, $n) {
+        return $this->_set($tag, function(&$option) use ($n) {
+            $option->nargs($n);
         });
     }
 
@@ -121,10 +138,19 @@ class CoaxOptions extends CoaxOptionsIterable {
         });
     }
 
-    public function implies($tag, $otherKeys) {
-        return $this->_set($tag, function(&$option) use ($otherKeys) {
-            $option->implies($otherKeys);
-        });
+    /**
+     * END api functions
+     */
+
+    public function epilogue($message) {
+        $this->_epilogueMessage = $message;
+        return $this;
+    }
+
+    public function fail($callback) {
+        if (! is_callable($callback)) throw new Exception('fail expects callback');
+        $this->_failureCallback = $callback;
+        return $this;
     }
 
     public function middleware($middlewares) {
@@ -138,22 +164,10 @@ class CoaxOptions extends CoaxOptionsIterable {
         return $this;
     }
 
-    public function nargs($tag, $n) {
-        return $this->_set($tag, function(&$option) use ($n) {
-            $option->nargs($n);
-        });
-    }
-
     public function option($tag) {
         $data = $this->_getTag($tag);
         $this->_setTag($tag, $data);
         return $data;
-    }
-
-    public function castToNumber($tag) {
-        return $this->_set($tag, function(&$option) {
-            $option->castToNumber();
-        });
     }
 
     public function showHelpOnFail($message = '') {
@@ -163,12 +177,6 @@ class CoaxOptions extends CoaxOptionsIterable {
             $this->_showHelpOnFail = true;
         }
         return $this;
-    }
-
-    public function castToString($tag) {
-        return $this->_set($tag, function(&$option) {
-            $option->castToString();
-        });
     }
 
     protected function _getTag($tag) {
