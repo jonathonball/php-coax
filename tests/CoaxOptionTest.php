@@ -46,10 +46,45 @@ class CoaxOptionTest extends TestCase {
     public function testAlias() {
         $option = new CoaxOption('a');
         $option->alias('alpha');
-        $data = $option->getData();
         $this->assertEquals(
-            $data['aliases'],
+            $option->getKey('aliases'),
             ['alpha']
+        );
+    }
+
+    public function testCastToArray() {
+        $option = new CoaxOption('a');
+        $option->castToArray();
+        $this->assertEquals(
+            $option->getKey('array'),
+            true
+        );
+    }
+
+    public function testCastToBoolean() {
+        $option = new CoaxOption('a');
+        $option->castToBoolean();
+        $this->assertEquals(
+            $option->getKey('boolean'),
+            true
+        );
+    }
+
+    public function testCastToNumber() {
+        $option = new CoaxOption('a');
+        $option->castToNumber();
+        $this->assertEquals(
+            $option->getKey('number'),
+            true
+        );
+    }
+
+    public function testCastToString(){
+        $option = new CoaxOption('a');
+        $option->castToString();
+        $this->assertEquals(
+            $option->getKey('string'),
+            true
         );
     }
 
