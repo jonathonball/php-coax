@@ -174,6 +174,20 @@ class CoaxOptions extends CoaxOptionsIterable {
         return $data;
     }
 
+    /**
+     * Finds or creates an array of tags or options
+     */
+    public function options($options = null) {
+        if ($options === null) return $this;
+        if (! is_array($options)) {
+            $options = [ $options ];
+        }
+        foreach ($options as $option) {
+            $this->option($option);
+        }
+        return $this;
+    }
+
     public function showHelpOnFail($message = '') {
         if (strlen($message)) {
             $this->_showHelpOnFail = $message;

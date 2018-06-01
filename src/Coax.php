@@ -47,19 +47,8 @@ class Coax {
         return $this->_options->option($option);
     }
 
-    /**
-     * Finds or creates an array of tags or options
-     * @param array $array Array of string or Coax\CoaxOption
-     * @return Coax\CoaxOption
-     */
     public function options($options = null) {
-        if ($options === null) return $this->_options;
-        if (! is_array($options)) {
-            $options = [ $options ];
-        }
-        foreach ($options as $option) {
-            $this->option($option);
-        }
+        return $this->_options->options($options);
     }
 
     public function parse() {
