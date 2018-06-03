@@ -8,7 +8,8 @@ class CoaxOption {
 
     protected $_data = [];
     protected $_tag = '';
-    
+    protected $_mutualExclusions = [];
+
     public function __construct($tag) {
         $this->_setTag($tag);
         return $this;
@@ -54,22 +55,30 @@ class CoaxOption {
     }
 
     public function castToArray() {
+        $this->_checkMutualExclusionViolation('array');
         $this->_data['array'] = true;
+        $this->_addMutuallyExclusiveFeatures(['boolean', 'number', 'string'], 'array');
         return $this;
     }
 
     public function castToBoolean() {
+        $this->_checkMutualExclusionViolation('boolean');
         $this->_data['boolean'] = true;
+        $this->_addMutuallyExclusiveFeatures(['array', 'number', 'string'], 'boolean');
         return $this;
     }
 
     public function castToNumber() {
+        $this->_checkMutualExclusionViolation('number');
         $this->_data['number'] = true;
+        $this->_addMutuallyExclusiveFeatures(['array', 'boolean', 'string'], 'number');
         return $this;
     }
 
     public function castToString() {
+        $this->_checkMutualExclusionViolation('string');
         $this->_data['string'] = true;
+        $this->_addMutuallyExclusiveFeatures(['array', 'boolean', 'number'], 'string');
         return $this;
     }
 
@@ -173,6 +182,28 @@ class CoaxOption {
             return $this->_data['required'];
         }
         return false;
+    }
+
+    protected function _addMutuallyExclusiveFeature($key, $conflictsWith) {
+        if (! is_string($key)) throw new \Exception('Mutual exclusion key must be string');
+        if (! is_string($conflictsWith)) throw new \Exception('Mutual exclusion conflict must be string');
+        $this->_mutualExclusions[$key] = $conflictsWith;
+        return $this;
+    }
+
+    protected function _addMutuallyExclusiveFeatures($keys, $conflictsWith) {
+        foreach ($keys as $key) {
+            $this->_addMutuallyExclusiveFeature($key, $conflictsWith);
+        }
+        return $this;
+    }
+
+    protected function _checkMutualExclusionViolation($key) {
+         if (array_key_exists($key, $this->_mutualExclusions)) {
+            throw new \Exception(
+                'castTo' . ucfirst($key) . ' cannot be used with castTo' . ucfirst($this->_mutualExclusions[$key])
+            );
+        }
     }
 
 }

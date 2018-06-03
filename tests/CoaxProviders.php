@@ -25,4 +25,21 @@ trait CoaxProviders {
         ];
     }
 
+    public function mutuallyExcludeFeaturesProvider() {
+        return [
+            ['castToArray', 'castToBoolean'],
+            ['castToArray', 'castToNumber'],
+            ['castToArray', 'castToString'],
+            ['castToBoolean', 'castToArray'],
+            ['castToBoolean', 'castToNumber'],
+            ['castToBoolean', 'castToString'],
+            ['castToString', 'castToArray'],
+            ['castToString', 'castToBoolean'],
+            ['castToString', 'castToNumber'],
+            ['castToNumber', 'castToArray'],
+            ['castToNumber', 'castToBoolean'],
+            ['castToNumber', 'castToString']
+        ];
+    }
+
 }

@@ -220,6 +220,11 @@ class CoaxOptions extends CoaxOptionsIterable {
         return $value;
     }
 
+    /**
+     * Apply a callback to an internally stored CoaxOption
+     * @param string $tag
+     * @param function $callback
+     */
     protected function _set($tag, $callback) {
         if (! is_string($tag)) throw new \Exception('_set expects tag to be string');
         if (! is_callable($callback)) throw new \Exception('_set expects callback to be callable');

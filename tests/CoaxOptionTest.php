@@ -79,13 +79,23 @@ class CoaxOptionTest extends TestCase {
         );
     }
 
-    public function testCastToString(){
+    public function testCastToString() {
         $option = new CoaxOption('a');
         $option->castToString();
         $this->assertEquals(
             $option->getKey('string'),
             true
         );
+    }
+
+    /**
+     * @dataProvider mutuallyExcludeFeaturesProvider
+     */
+    public function testCastsAreMutuallyExclusive($first, $second) {
+        $option = new CoaxOption('test');
+        $option = call_user_func(array($option, $first));
+        $this->expectException('Exception');
+        $option = call_user_func(array($option, $second));
     }
 
 }
